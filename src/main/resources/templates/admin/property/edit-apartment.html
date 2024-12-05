@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/base}">
+<body>
+<div layout:fragment="content">
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Quản lý căn hộ</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item">Forms</li>
+                    <li class="breadcrumb-item active">Quản lý căn hộ</li>
+                </ol>
+            </nav>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <form class="row g-3" id="apartmentForm" method="post" th:action="@{/admin/updateApartment/{maCan}(maCan=${apartmentcurrent.maCan})}">
+                                <!-- Thông tin vị trí -->
+                                <div class="col-12">
+                                    <h6 class="card-title">Thông tin vị trí</h6>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="dia_chi" class="form-label">Địa chỉ</label>
+                                    <input type="text" class="form-control" id="dia_chi" name ="diaChi" required th:value="${apartmentcurrent.diaChi}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="ten_vi_tri" class="form-label">Tên vị trí</label>
+                                    <input type="text" class="form-control" id="ten_vi_tri" required name="tenViTri" th:value="${apartmentcurrent.tenViTri}">
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="mo_ta" class="form-label">Mô tả vị trí</label>
+                                    <textarea class="form-control" id="mo_ta" rows="3" name="moTa" th:text="${apartmentcurrent.moTa}"></textarea>
+                                </div>
+
+                                <div class="section-divider"></div>
+
+                                <!-- Thông tin căn hộ -->
+                                <div class="col-12">
+                                    <h6 class="card-title">Thông tin căn hộ</h6>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="ma_can" class="form-label">Mã căn hộ</label>
+                                    <input type="text" class="form-control" id="ma_can" required name="maCan" th:value="${apartmentcurrent.maCan}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="dien_tich" class="form-label">Diện tích (m²)</label>
+                                    <input type="number" class="form-control" id="dien_tich" required name="dienTich" th:value="${apartmentcurrent.dienTich}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="gia_thue" class="form-label">Giá thuê</label>
+                                    <input type="number" class="form-control" id="gia_thue" required name="giaThue" th:value="${apartmentcurrent.giaThue}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="so_phong" class="form-label">Số phòng</label>
+                                    <input type="number" class="form-control" id="so_phong" required name="soPhong" th:value="${apartmentcurrent.soPhong}">
+                                </div>
+
+                                <div class="section-divider"></div>
+
+                                <!-- Thông tin người thuê -->
+                                <div class="col-12">
+                                    <h6 class="card-title">Thông tin người thuê/chủ sở hữu</h6>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="ho_ten" class="form-label">Họ tên</label>
+                                    <input type="text" class="form-control" id="ho_ten" required name="hoTen" th:value="${apartmentcurrent.hoTen}">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" required name="email" th:value="${apartmentcurrent.email}">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="sdt" class="form-label">Số điện thoại</label>
+                                    <input type="tel" class="form-control" id="sdt" required name="sdt" th:value="${apartmentcurrent.sdt}">
+                                </div>
+
+                                <div class="section-divider"></div>
+
+                                <!-- Thông tin hợp đồng -->
+
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Danh sách hợp đồng</h6>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Ngày bắt đầu</th>
+                                                <th>Trạng thái</th>
+                                                <th>Người tạo</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="don, donStat : ${apartmentcurrent.dons}">
+                                                <!-- Hidden inputs để gửi dữ liệu -->
+
+                                                <td>
+                                                    <input type="date" class="form-control"
+                                                           th:name="'dons[' + ${donStat.index} + '].ngayTao'"
+                                                           th:value="${don.ngayTao}" />
+                                                </td>
+                                                <td>
+                                                    <select class="form-select"
+                                                            th:name="'dons[' + ${donStat.index} + '].trangThai'">
+                                                        <option value="HOATDONG" th:selected="${don.trangThai == 'HOATDONG'}">Đang hoạt động</option>
+                                                        <option value="CHOXULY" th:selected="${don.trangThai == 'CHOXULY'}">Chờ xử lý</option>
+                                                        <option value="HOANTHANH" th:selected="${don.trangThai == 'HOANTHANH'}">Hoàn thành</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" readonly
+                                                           th:name="'dons[' + ${donStat.index} + '].nguoiTao.hoTen'"
+                                                           th:value="${don.nguoiTao.hoTen}" />
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-12 text-center mt-4">
+                                    <button type="submit" class="btn btn-primary me-2">Lưu thông tin</button>
+                                    <button type="reset" class="btn btn-secondary">Làm mới</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
